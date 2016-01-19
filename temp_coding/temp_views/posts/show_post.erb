@@ -1,0 +1,12 @@
+<h1><%= @post.title %></h1>
+<h3>By: <a href="/users/<%= @post.user.slug %>"><%= @post.user.username %></a></h3>
+<p><%= post.content %></p>
+<br>
+<form method="GET" action="/posts/<%= @post.slug %>/edit">
+  <input type="submit" value="Edit Post">
+</form>
+<br>
+<form method="POST" action="/posts/<%= @post.slug %>/delete">
+  <input type="submit" value="Delete Post">
+</form>
+<br>

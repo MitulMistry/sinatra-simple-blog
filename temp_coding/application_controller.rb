@@ -26,14 +26,14 @@ class ApplicationController < Sinatra::Base
 
   #create new user
   post '/users/signup' do
-=begin
-    if (params are good)
-
+    if !params[:username].empty? && !params[:email].empty? && !params[:password].empty?
+      @user = User.create(username: params[:username], email: params[:email], password: params[:password])
+      session[:user_id] = @user.id
+      redirect to '/'
     else
       #give message, didn't work?
+      redirect to '/users/signup'
     end
-=end
-    redirect to '/'
   end
 
   #login page
@@ -73,14 +73,24 @@ class ApplicationController < Sinatra::Base
 
   #process post creation
   post '/posts/new' do
-=begin
-    if (params are good)
 
+    if !params[:title].empty? && !params[:content].empty?
+      @post = Post.new(title: params[:title], content: params[:content]) # new rather than create so doesn't have to write to database twice (has to save at the end)
+      @post.tag_ids = params[:tag_ids] # set title ids to array of ids from checkboxes
+
+      if !params[:new_tags].empty?
+        params[:new_tags].each do |tag_value|
+          tag = Tag.create(name: tag_value)
+          @post.tags << tag
+        end
+      end
+
+      @post.save
+      redirect to "/posts/#{@post.slug}"
     else
       #give message, didn't work?
+      redirect to '/posts/new'
     end
-=end
-    #redirect to "/posts/#{post.slug}"
   end
 
   #show specific post based on title slug
