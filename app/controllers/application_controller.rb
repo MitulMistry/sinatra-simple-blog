@@ -56,6 +56,16 @@ class ApplicationController < Sinatra::Base
     end
   end
 
+  #logout process
+  get '/users/logout' do
+    if logged_in?
+      session.destroy #log out
+      redirect to '/login'
+    else
+      redirect to '/'
+    end
+  end
+
   #show user's posts
   get '/users/:user_slug' do
     @user = User.find_by_slug(params[:user_slug])
@@ -75,7 +85,7 @@ class ApplicationController < Sinatra::Base
   post '/posts/new' do
 
     if !params[:title].empty? && !params[:content].empty?
-      @post = Post.new(title: params[:title], content: params[:content]) # new rather than create so doesn't have to write to database twice (has to save at the end)
+      @post = Post.new(title: params[:title], content: params[:content], user_id: session[:user_id]) # new rather than create so doesn't have to write to database twice (has to save at the end)
       @post.tag_ids = params[:tag_ids] # set title ids to array of ids from checkboxes
 
       if !params[:new_tags].empty?

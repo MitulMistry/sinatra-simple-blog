@@ -5,10 +5,12 @@
   <label for="content">Post: </label>
   <input type="text" id="content" name="content"><br><br>
 
-  <h3>Tags:</h3>
-  <% @tags.each do |tag| %>
-    <%= tag.name %>
-    <input type="checkbox" id="tag<%= tag.id %>" name="tag_ids[]" value="<%= tag.id %>"><br>
+  <% if @tags %>
+    <h3>Tags:</h3>
+    <% @tags.each do |tag| %>
+      <%= tag.name %>
+      <input type="checkbox" id="tag<%= tag.id %>" name="tag_ids[]" value="<%= tag.id %>"><br>
+    <% end %>
   <% end %>
 
   <label for="new_tag">New Tag: </label>

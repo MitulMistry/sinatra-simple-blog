@@ -8,6 +8,6 @@ class Post < ActiveRecord::Base
   end
 
   def self.find_by_slug(slug)
-    self.all.detect { |post| post.title.slug == slug }
+    self.all.detect { |post| post.slug == slug }
   end
 end
