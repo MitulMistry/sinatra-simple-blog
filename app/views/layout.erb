@@ -6,13 +6,17 @@
   <body>
     <% if logged_in? %>
       <a href="/">View All Posts</a>
+      <a href="/tags">View Posts By Tag</a>
       <a href="/users/<%= current_user.slug %>">View Your Posts</a>
       <a href="/posts/new">Create Post</a>
       <a href="/users/logout">Log Out</a>
     <% else %>
+      <a href="/">View All Posts</a>
+      <a href="/tags">View Posts By Tag</a>
       <a href="/users/signup">Sign Up</a>
       <a href="/users/login">Login</a>
     <%end %>
+    <br>
 
     <%= yield %>
   </body>

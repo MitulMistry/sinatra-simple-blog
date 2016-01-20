@@ -1,7 +1,7 @@
-<% @posts.each do |post| %>
-  <h2><a href="/posts/<%= post.slug %>"><%= post.title %></a></h2>
+<h1><%= @tag.name %></h1>
+<% @tag.posts.each do |post| %>
+  <h2><%= post.title %></h2>  
   <h3>By: <a href="/users/<%= post.user.slug %>"><%= post.user.username %></a></h3>
   <p><%= post.created_at %></p>
   <p><%= post.content %></p>
-  <br>
 <% end %>

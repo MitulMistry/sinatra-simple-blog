@@ -1,6 +1,12 @@
 <h1><%= @post.title %></h1>
 <h3>By: <a href="/users/<%= @post.user.slug %>"><%= @post.user.username %></a></h3>
-<p><%= post.content %></p>
+<p><%= @post.created_at %></p>
+<p><%= @post.content %></p>
+<p>Tags:
+  <% @post.tags.each do |tag| %>
+  <%= tag.name %>
+  <% end %>
+</p>
 <br>
 <form method="GET" action="/posts/<%= @post.slug %>/edit">
   <input type="submit" value="Edit Post">

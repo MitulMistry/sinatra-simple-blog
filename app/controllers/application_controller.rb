@@ -60,7 +60,7 @@ class ApplicationController < Sinatra::Base
   get '/users/logout' do
     if logged_in?
       session.destroy #log out
-      redirect to '/login'
+      redirect to '/users/login'
     else
       redirect to '/'
     end
@@ -75,6 +75,7 @@ class ApplicationController < Sinatra::Base
   #create new post
   get '/posts/new' do
     if logged_in?
+      @tags = Tag.all
       erb :'posts/create_post'
     else
       redirect to '/users/login'
@@ -114,6 +115,7 @@ class ApplicationController < Sinatra::Base
     @post = Post.find_by_slug(params[:post_slug])
     if logged_in?
       if @post.user_id == current_user.id
+        @tags = Tag.all
         erb :'posts/edit_post'
       else
         #give message, you don't have permission?
@@ -127,9 +129,26 @@ class ApplicationController < Sinatra::Base
   post '/posts/:post_slug/edit' do
     post = Post.find_by_slug(params[:post_slug])
     if logged_in? && post.user_id == current_user.id
-      #if params are good
-        #update post with params
-      #end
+
+      if !params[:title].empty? && !params[:content].empty?
+        post.tag_ids = params[:tag_ids] # set title ids to array of ids from checkboxes
+
+        post.title = params[:title]
+        post.content = params[:content]
+
+        if !params[:new_tags].empty?
+          params[:new_tags].each do |tag_value|
+            tag = Tag.create(name: tag_value)
+            post.tags << tag
+          end
+        end
+
+        post.save
+        redirect to "/posts/#{post.slug}"
+      else
+        #give message, didn't work?
+        redirect to "/posts/#{params[:post_slug]}"
+      end
     end
     #redirect to "/posts/#{post.slug}"
   end
@@ -148,6 +167,16 @@ class ApplicationController < Sinatra::Base
     else
       redirect to '/users/login'
     end
+  end
+
+  get '/tags' do
+    @tags = Tag.all
+    erb :'tags/choose_tag'
+  end
+
+  get '/tags/:tag_slug' do
+    @tag = Tag.find_by_slug(params[:tag_slug])
+    erb :'tags/show_tag'
   end
 
   helpers do
