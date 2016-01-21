@@ -18,6 +18,10 @@
     <%end %>
     <br>
 
+    <% unless locals.empty? %>
+      <br><%= message %><br>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>

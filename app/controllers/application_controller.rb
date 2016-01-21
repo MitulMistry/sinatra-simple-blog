@@ -31,8 +31,8 @@ class ApplicationController < Sinatra::Base
       session[:user_id] = @user.id
       redirect to '/'
     else
-      #give message, didn't work?
-      redirect to '/users/signup'
+      #redirect to '/users/signup'
+      erb :'users/signup', locals: {message: "Failed to create new account. Please fill out the fields with valid information."}
     end
   end
 
@@ -52,7 +52,8 @@ class ApplicationController < Sinatra::Base
       session[:user_id] = user.id
       redirect to "/users/#{current_user.slug}"
     else
-      redirect to '/users/login'
+      #redirect to '/users/login'
+      erb :'users/login', locals: {message: "Invalid user or password. Please try again."}
     end
   end
 
@@ -60,7 +61,8 @@ class ApplicationController < Sinatra::Base
   get '/users/logout' do
     if logged_in?
       session.destroy #log out
-      redirect to '/users/login'
+      #redirect to '/users/login',
+      erb :'users/login', locals: {message: "Successfully logged out."}
     else
       redirect to '/'
     end
@@ -91,16 +93,19 @@ class ApplicationController < Sinatra::Base
 
       if !params[:new_tags].empty?
         params[:new_tags].each do |tag_value|
-          tag = Tag.create(name: tag_value)
-          @post.tags << tag
+          if tag_value != ""
+            tag = Tag.create(name: tag_value)
+            @post.tags << tag
+          end
         end
       end
 
       @post.save
       redirect to "/posts/#{@post.slug}"
     else
-      #give message, didn't work?
-      redirect to '/posts/new'
+      #redirect to '/posts/new'
+      @tags = Tag.all
+      erb :'posts/create_post', locals: {message: "Invalid input. Please fill out all the fields."}
     end
   end
 
@@ -118,8 +123,8 @@ class ApplicationController < Sinatra::Base
         @tags = Tag.all
         erb :'posts/edit_post'
       else
-        #give message, you don't have permission?
-        redirect to "/posts/#{@post.slug}"
+        #redirect to "/posts/#{@post.slug}"
+        erb :'posts/show_post', locals: {message: "You don't have permission to edit this post."}
       end
     else
       redirect to '/users/login'
@@ -127,42 +132,43 @@ class ApplicationController < Sinatra::Base
   end
 
   post '/posts/:post_slug/edit' do
-    post = Post.find_by_slug(params[:post_slug])
-    if logged_in? && post.user_id == current_user.id
+    @post = Post.find_by_slug(params[:post_slug])
+    if logged_in? && @post.user_id == current_user.id
 
       if !params[:title].empty? && !params[:content].empty?
-        post.tag_ids = params[:tag_ids] # set title ids to array of ids from checkboxes
+        @post.tag_ids = params[:tag_ids] # set title ids to array of ids from checkboxes
 
-        post.title = params[:title]
-        post.content = params[:content]
+        @post.title = params[:title]
+        @post.content = params[:content]
 
         if !params[:new_tags].empty?
           params[:new_tags].each do |tag_value|
             tag = Tag.create(name: tag_value)
-            post.tags << tag
+            @post.tags << tag
           end
         end
 
-        post.save
-        redirect to "/posts/#{post.slug}"
+        @post.save
+        redirect to "/posts/#{@post.slug}"
       else
-        #give message, didn't work?
-        redirect to "/posts/#{params[:post_slug]}"
+        #redirect to "/posts/#{params[:post_slug]}"
+        erb :'posts/show_post', locals: {message: "Invalid input. To edit a post, please fill out the fields with valid data."}
       end
     end
     #redirect to "/posts/#{post.slug}"
   end
 
   post '/posts/:post_slug/delete' do
-    post = Post.find_by_slug(params[:post_slug])
+    @post = Post.find_by_slug(params[:post_slug])
     if logged_in?
-      if post.user_id == current_user.id
-        post.delete
-        #give message, post deleted?
-        redirect to '/'
+      if @post.user_id == current_user.id
+        @post.delete
+        #redirect to '/'
+        @posts = Post.all
+        erb :'index', locals: {message: "Post deleted."}
       else
-        #give message, you don't have permission?
-        redirect to "/posts/#{post.slug}"
+        #redirect to "/posts/#{@post.slug}"
+        erb :'posts/show_post', locals: {message: "You don't have permission to delete this post."}
       end
     else
       redirect to '/users/login'
