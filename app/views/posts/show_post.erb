@@ -4,7 +4,9 @@
 <p><%= @post.content %></p>
 <p>Tags:
   <% @post.tags.each do |tag| %>
-  <%= tag.name %>
+    <a href="/tags/<%= tag.slug %>" class="btn btn-default btn-sm" aria-label="Left Align">
+      <%= tag.name %>
+    </a>
   <% end %>
 </p>
 <br>

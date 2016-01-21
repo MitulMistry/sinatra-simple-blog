@@ -1,27 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>Simple Blog</title>
+
+    <!-- Bootstrap -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
   </head>
   <body>
-    <% if logged_in? %>
-      <a href="/">View All Posts</a>
-      <a href="/tags">View Posts By Tag</a>
-      <a href="/users/<%= current_user.slug %>">View Your Posts</a>
-      <a href="/posts/new">Create Post</a>
-      <a href="/users/logout">Log Out</a>
-    <% else %>
-      <a href="/">View All Posts</a>
-      <a href="/tags">View Posts By Tag</a>
-      <a href="/users/signup">Sign Up</a>
-      <a href="/users/login">Login</a>
-    <%end %>
-    <br>
+
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Simple Blog</a>
+        </div>
+
+        <ul class="nav navbar-nav">
+          <% if logged_in? %>
+            <li><a href="/">View All Posts</a></li>
+            <li><a href="/tags">View Posts By Tag</a></li>
+            <li><a href="/users/<%= current_user.slug %>">View Your Posts</a></li>
+            <li><a href="/posts/new">Create Post</a></li>
+            <li><a href="/users/logout">Log Out</a></li>
+          <% else %>
+            <li><a href="/">View All Posts</a></li>
+            <li><a href="/tags">View Posts By Tag</a></li>
+            <li><a href="/users/signup">Sign Up</a></li>
+            <li><a href="/users/login">Login</a></li>
+          <%end %>
+        </ul>
+
+      </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="container">
 
     <% unless locals.empty? %>
-      <br><%= message %><br>
+      <div class="alert alert-warning" role="alert"><%= message %></div>
     <% end %>
 
     <%= yield %>
+
+    </div><!-- /.container-fluid -->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
   </body>
 </html>
