@@ -131,11 +131,12 @@ class ApplicationController < Sinatra::Base
     end
   end
 
-  post '/posts/:post_slug/edit' do
+  post '/posts/:post_slug' do
     @post = Post.find_by_slug(params[:post_slug])
     if logged_in? && @post.user_id == current_user.id
 
       if !params[:title].empty? && !params[:content].empty?
+        #@post.update(title: params[:title], content: params[:content])
         @post.tag_ids = params[:tag_ids] # set title ids to array of ids from checkboxes
 
         @post.title = params[:title]
@@ -149,6 +150,7 @@ class ApplicationController < Sinatra::Base
         end
 
         @post.save
+        Tag.delete_empty_tags
         redirect to "/posts/#{@post.slug}"
       else
         #redirect to "/posts/#{params[:post_slug]}"
@@ -162,7 +164,8 @@ class ApplicationController < Sinatra::Base
     @post = Post.find_by_slug(params[:post_slug])
     if logged_in?
       if @post.user_id == current_user.id
-        @post.delete
+        @post.destroy
+        Tag.delete_empty_tags
         #redirect to '/'
         @posts = Post.all
         erb :'index', locals: {message: "Post deleted."}

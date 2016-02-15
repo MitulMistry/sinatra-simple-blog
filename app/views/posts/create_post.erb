@@ -1,9 +1,9 @@
-<h1>Create Post:</h1>
+<h2>Create Post:</h2>
 <form method="POST" action="/posts/new">
-  <label for="title">Title: </label>
+  <label for="title">Title: </label><br>
   <input type="text" id="title" name="title"><br><br>
-  <label for="content">Post: </label>
-  <input type="text" id="content" name="content"><br><br>
+  <label for="content">Post: </label><br>
+  <textarea name="content" id="content" style="width:350px;height:150px;"></textarea>
 
   <h3>Tags:</h3>
   <% if @tags %>
