@@ -31,7 +31,6 @@ class ApplicationController < Sinatra::Base
       session[:user_id] = @user.id
       redirect to '/'
     else
-      #redirect to '/users/signup'
       erb :'users/signup', locals: {message: "Failed to create new account. Please fill out the fields with valid information."}
     end
   end
@@ -52,7 +51,6 @@ class ApplicationController < Sinatra::Base
       session[:user_id] = user.id
       redirect to "/users/#{current_user.slug}"
     else
-      #redirect to '/users/login'
       erb :'users/login', locals: {message: "Invalid user or password. Please try again."}
     end
   end
@@ -61,7 +59,6 @@ class ApplicationController < Sinatra::Base
   get '/users/logout' do
     if logged_in?
       session.destroy #log out
-      #redirect to '/users/login',
       erb :'users/login', locals: {message: "Successfully logged out."}
     else
       redirect to '/'
@@ -103,7 +100,6 @@ class ApplicationController < Sinatra::Base
       @post.save
       redirect to "/posts/#{@post.slug}"
     else
-      #redirect to '/posts/new'
       @tags = Tag.all
       erb :'posts/create_post', locals: {message: "Invalid input. Please fill out all the fields."}
     end
@@ -123,7 +119,6 @@ class ApplicationController < Sinatra::Base
         @tags = Tag.all
         erb :'posts/edit_post'
       else
-        #redirect to "/posts/#{@post.slug}"
         erb :'posts/show_post', locals: {message: "You don't have permission to edit this post."}
       end
     else
@@ -153,11 +148,9 @@ class ApplicationController < Sinatra::Base
         Tag.delete_empty_tags
         redirect to "/posts/#{@post.slug}"
       else
-        #redirect to "/posts/#{params[:post_slug]}"
         erb :'posts/show_post', locals: {message: "Invalid input. To edit a post, please fill out the fields with valid data."}
       end
     end
-    #redirect to "/posts/#{post.slug}"
   end
 
   post '/posts/:post_slug/delete' do
@@ -166,11 +159,10 @@ class ApplicationController < Sinatra::Base
       if @post.user_id == current_user.id
         @post.destroy
         Tag.delete_empty_tags
-        #redirect to '/'
+
         @posts = Post.all
         erb :'index', locals: {message: "Post deleted."}
       else
-        #redirect to "/posts/#{@post.slug}"
         erb :'posts/show_post', locals: {message: "You don't have permission to delete this post."}
       end
     else
