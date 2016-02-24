@@ -84,25 +84,13 @@ class ApplicationController < Sinatra::Base
   #process post creation
   post '/posts' do
     if !params[:post][:title].empty? && !params[:post][:content].empty?
-      params[:post][:user_id] = session[:user_id] #sets user_id for post to current session user rather than having a hidden field in the form
+      params[:post][:user_id] = current_user_id #sets user_id for post to current session user rather than having a hidden field in the form
       @post = Post.new(params[:post]) #ActiveRecord handles array of tag_ids from checkboxes
-      #@post = Post.new(title: params[:title], content: params[:content], user_id: session[:user_id]) # new rather than create so doesn't have to write to database twice (has to save at the end)
-      #@post.tag_ids = params[:tag_ids] # set title ids to array of ids from checkboxes
 
       if !params[:tag][:name].empty?
-        @post.tags << Tag.create(name: params[:tag][:name])
+        @post.tags << Tag.create(name: params[:tag][:name]) #create new tag
       end
 
-=begin
-      if !params[:new_tags].empty?
-        params[:new_tags].each do |tag_value|
-          if tag_value != ""
-            tag = Tag.create(name: tag_value)
-            @post.tags << tag
-          end
-        end
-      end
-=end
       @post.save
       redirect to "/posts/#{@post.slug}"
     else
@@ -114,14 +102,20 @@ class ApplicationController < Sinatra::Base
   #show specific post based on title slug
   get '/posts/:post_slug' do
     @post = Post.find_by_slug(params[:post_slug])
+    if @post.user_id == current_user_id
+      @owns_post = true
+    else
+      @owns_post = false
+    end
     erb :'posts/show_post'
   end
 
   #edit specific post if logged in and correct user
   get '/posts/:post_slug/edit' do
     @post = Post.find_by_slug(params[:post_slug])
+
     if logged_in?
-      if @post.user_id == current_user.id
+      if @post.user_id == current_user_id
         @tags = Tag.all
         erb :'posts/edit_post'
       else
@@ -132,22 +126,18 @@ class ApplicationController < Sinatra::Base
     end
   end
 
+  #process post edit
   post '/posts/:post_slug' do
     @post = Post.find_by_slug(params[:post_slug])
-    if logged_in? && @post.user_id == current_user.id
 
-      if !params[:title].empty? && !params[:content].empty?
-        #@post.update(title: params[:title], content: params[:content])
-        @post.tag_ids = params[:tag_ids] # set title ids to array of ids from checkboxes
+    if logged_in? && @post.user_id == current_user_id
 
-        @post.title = params[:title]
-        @post.content = params[:content]
+      if !params[:post][:title].empty? && !params[:post][:content].empty?
+        params[:post][:user_id] = current_user_id
+        @post.update(params[:post])
 
-        if !params[:new_tags].empty?
-          params[:new_tags].each do |tag_value|
-            tag = Tag.create(name: tag_value)
-            @post.tags << tag
-          end
+        if !params[:tag][:name].empty?
+          @post.tags << Tag.create(name: params[:tag][:name])
         end
 
         @post.save
@@ -159,10 +149,11 @@ class ApplicationController < Sinatra::Base
     end
   end
 
+  #process post deletion
   post '/posts/:post_slug/delete' do
     @post = Post.find_by_slug(params[:post_slug])
     if logged_in?
-      if @post.user_id == current_user.id
+      if @post.user_id == current_user_id
         @post.destroy
         Tag.delete_empty_tags
 
@@ -193,6 +184,10 @@ class ApplicationController < Sinatra::Base
 
     def current_user
       User.find(session[:user_id])
+    end
+
+    def current_user_id
+      session[:user_id]
     end
   end
 

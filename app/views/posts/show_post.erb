@@ -10,11 +10,13 @@
   <% end %>
 </p>
 <br>
-<form method="GET" action="/posts/<%= @post.slug %>/edit">
-  <input type="submit" value="Edit Post">
-</form>
-<br>
-<form method="POST" action="/posts/<%= @post.slug %>/delete">
-  <input type="submit" value="Delete Post">
-</form>
-<br>
+<% if @owns_post %>
+  <form method="GET" action="/posts/<%= @post.slug %>/edit">
+    <input type="submit" value="Edit Post">
+  </form>
+  <br>
+  <form method="POST" action="/posts/<%= @post.slug %>/delete">
+    <input type="submit" value="Delete Post">
+  </form>
+  <br>
+<% end %>
