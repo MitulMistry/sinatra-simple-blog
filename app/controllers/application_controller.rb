@@ -68,14 +68,14 @@ class ApplicationController < Sinatra::Base
   #show user's posts
   get '/users/:user_slug' do
     @user = User.find_by_slug(params[:user_slug])
-    erb :'users/show_user'
+    erb :'users/show'
   end
 
   #create new post
   get '/posts/new' do
     if logged_in?
       @tags = Tag.all
-      erb :'posts/create_post'
+      erb :'posts/new'
     else
       redirect to '/users/login'
     end
@@ -95,7 +95,7 @@ class ApplicationController < Sinatra::Base
       redirect to "/posts/#{@post.slug}"
     else
       @tags = Tag.all
-      erb :'posts/create_post', locals: {message: "Invalid input. Please fill out all the fields."}
+      erb :'posts/new', locals: {message: "Invalid input. Please fill out all the fields."}
     end
   end
 
@@ -107,7 +107,7 @@ class ApplicationController < Sinatra::Base
     else
       @owns_post = false
     end
-    erb :'posts/show_post'
+    erb :'posts/show'
   end
 
   #edit specific post if logged in and correct user
@@ -117,9 +117,9 @@ class ApplicationController < Sinatra::Base
     if logged_in?
       if @post.user_id == current_user_id
         @tags = Tag.all
-        erb :'posts/edit_post'
+        erb :'posts/edit'
       else
-        erb :'posts/show_post', locals: {message: "You don't have permission to edit this post."}
+        erb :'posts/show', locals: {message: "You don't have permission to edit this post."}
       end
     else
       redirect to '/users/login'
@@ -144,7 +144,7 @@ class ApplicationController < Sinatra::Base
         Tag.delete_empty_tags
         redirect to "/posts/#{@post.slug}"
       else
-        erb :'posts/show_post', locals: {message: "Invalid input. To edit a post, please fill out the fields with valid data."}
+        erb :'posts/show', locals: {message: "Invalid input. To edit a post, please fill out the fields with valid data."}
       end
     end
   end
@@ -160,7 +160,7 @@ class ApplicationController < Sinatra::Base
         @posts = Post.all
         erb :'index', locals: {message: "Post deleted."}
       else
-        erb :'posts/show_post', locals: {message: "You don't have permission to delete this post."}
+        erb :'posts/show', locals: {message: "You don't have permission to delete this post."}
       end
     else
       redirect to '/users/login'
@@ -169,12 +169,12 @@ class ApplicationController < Sinatra::Base
 
   get '/tags' do
     @tags = Tag.all
-    erb :'tags/choose_tag'
+    erb :'tags/index'
   end
 
   get '/tags/:tag_slug' do
     @tag = Tag.find_by_slug(params[:tag_slug])
-    erb :'tags/show_tag'
+    erb :'tags/show'
   end
 
   helpers do
