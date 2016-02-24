@@ -1,4 +1,4 @@
-<h1>Tags:</h1>
+<h2>Tags:</h2>
 <% @tags.each do |tag| %>
-<p><a href="/tags/<%= tag.slug %>"><%= tag.name %></a></p>
+  <h4><a href="/tags/<%= tag.slug %>"><%= tag.name %></a></h4>
 <% end %>

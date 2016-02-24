@@ -1,7 +1,7 @@
-<h1>Posts by <%= @user.username %>:</h1>
+<h2>Posts by <%= @user.username %>:</h2>
 <% @user.posts.each do |post| %>
-  <h2><a href="/posts/<%= post.slug %>"><%= post.title %></a></h2>
-<p><%= post.readable_date %></p>
+  <h3><a href="/posts/<%= post.slug %>"><%= post.title %></a></h3>
+  <p><strong><%= post.readable_date %></strong></p>
   <p><%= post.content %></p>
   <br>
 <% end %>

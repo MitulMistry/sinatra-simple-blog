@@ -82,12 +82,18 @@ class ApplicationController < Sinatra::Base
   end
 
   #process post creation
-  post '/posts/new' do
+  post '/posts' do
+    if !params[:post][:title].empty? && !params[:post][:content].empty?
+      params[:post][:user_id] = session[:user_id] #sets user_id for post to current session user rather than having a hidden field in the form
+      @post = Post.new(params[:post]) #ActiveRecord handles array of tag_ids from checkboxes
+      #@post = Post.new(title: params[:title], content: params[:content], user_id: session[:user_id]) # new rather than create so doesn't have to write to database twice (has to save at the end)
+      #@post.tag_ids = params[:tag_ids] # set title ids to array of ids from checkboxes
 
-    if !params[:title].empty? && !params[:content].empty?
-      @post = Post.new(title: params[:title], content: params[:content], user_id: session[:user_id]) # new rather than create so doesn't have to write to database twice (has to save at the end)
-      @post.tag_ids = params[:tag_ids] # set title ids to array of ids from checkboxes
+      if !params[:tag][:name].empty?
+        @post.tags << Tag.create(name: params[:tag][:name])
+      end
 
+=begin
       if !params[:new_tags].empty?
         params[:new_tags].each do |tag_value|
           if tag_value != ""
@@ -96,7 +102,7 @@ class ApplicationController < Sinatra::Base
           end
         end
       end
-
+=end
       @post.save
       redirect to "/posts/#{@post.slug}"
     else

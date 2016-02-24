@@ -1,20 +1,20 @@
 <h2>Create Post:</h2>
-<form method="POST" action="/posts/new">
+<form method="POST" action="/posts">
   <label for="title">Title: </label><br>
-  <input type="text" id="title" name="title"><br><br>
+  <input type="text" id="title" name="post[title]"><br><br>
   <label for="content">Post: </label><br>
-  <textarea name="content" id="content" style="width:350px;height:150px;"></textarea>
+  <textarea id="content" name="post[content]" style="width:350px;height:150px;"></textarea>
 
   <h3>Tags:</h3>
   <% if @tags %>
     <% @tags.each do |tag| %>
       <%= tag.name %>
-      <input type="checkbox" id="tag<%= tag.id %>" name="tag_ids[]" value="<%= tag.id %>"><br>
+      <input type="checkbox" id="tag<%= tag.id %>" name="post[tag_ids][]" value="<%= tag.id %>"><br>
     <% end %>
   <% end %>
 
   <label for="new_tag">New Tag: </label>
-  <input type="text" id="new_tag" name="new_tags[]"><br><br>
+  <input type="text" id="new_tag" name="tag[name]"><br><br>
 
-  <input type="submit" value="Submit">
+  <input type="submit" value="Create Post">
 </form>

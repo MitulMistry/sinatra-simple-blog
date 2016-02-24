@@ -1,6 +1,6 @@
-<h1><%= @post.title %></h1>
-<h3>By: <a href="/users/<%= @post.user.slug %>"><%= @post.user.username %></a></h3>
-<p><%= @post.readable_date %></p>
+<h2><%= @post.title %></h2>
+<h4>By: <a href="/users/<%= @post.user.slug %>"><%= @post.user.username %></a></h4>
+<p><strong><%= @post.readable_date %></strong></p>
 <p><%= @post.content %></p>
 <p>Tags:
   <% @post.tags.each do |tag| %>
